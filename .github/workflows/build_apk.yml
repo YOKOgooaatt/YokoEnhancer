@@ -16,18 +16,22 @@ jobs:
     - name: Setup Java Subsystem
       uses: actions/setup-java@v4
       with:
-        distribution: 'zulu'
+        distribution: 'temurin'
         java-version: '17'
 
     - name: Setup Android SDK Environment
-      # This step installs the missing build tools natively on the cloud computer
       uses: android-actions/setup-android@v3
 
+    - name: Initialize Direct Workspace Wrapper
+      # Dynamically generates a raw, flat layout maps on the cloud server
+      run: |
+        gradle init --type basic --dsl kotlin --incubating --no-daemon || true
+
     - name: Compile App via Global System Engine
-      run: gradle assembleDebug --no-daemon
+      run: gradle assembleDebug --stacktrace --no-daemon
 
     - name: Upload Finished APK File
       uses: actions/upload-artifact@v4
       with:
         name: RealFace-Enhancer-APK
-        path: app/build/outputs/apk/debug/app-debug.apk
+        path: "**/build/outputs/apk/debug/*.apk"
