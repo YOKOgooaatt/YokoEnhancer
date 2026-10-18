@@ -19,19 +19,67 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
 
-    - name: Setup Android SDK Environment
-      uses: android-actions/setup-android@v3
-
-    - name: Initialize Direct Workspace Wrapper
-      # Dynamically generates a raw, flat layout maps on the cloud server
+    - name: Dynamically Generate Flawless Android Project Structure
       run: |
-        gradle init --type basic --dsl kotlin --incubating --no-daemon || true
+        # 1. Create the complete required directory tree structure
+        mkdir -p app/src/main/java/com/realface/enhancer
+        
+        # 2. Generate the missing root settings wrapper
+        cat << 'EOF' > settings.gradle.kts
+        pluginManagement { repositories { google(); mavenCentral(); gradlePluginPortal() } }
+        dependencyResolutionManagement {
+            repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+            repositories { google(); mavenCentral() }
+        }
+        rootProject.name = "RealFace-Enhancer"
+        include(":app")
+        EOF
 
-    - name: Compile App via Global System Engine
-      run: gradle assembleDebug --stacktrace --no-daemon
+        # 3. Generate the root project build script
+        cat << 'EOF' > build.gradle.kts
+        plugins {
+            id("com.android.application") version "8.2.2" apply false
+            id("org.jetbrains.kotlin.android") version "1.9.22" apply false
+        }
+        EOF
+
+        # 4. Generate the app module configuration script
+        cat << 'EOF' > app/build.gradle.kts
+        plugins {
+            id("com.android.application")
+            id("org.jetbrains.kotlin.android")
+        }
+        android {
+            namespace = "com.realface.enhancer"
+            compileSdk = 34
+            defaultConfig {
+                applicationId = "com.realface.enhancer"
+                minSdk = 26
+                targetSdk = 34
+                versionCode = 1
+                versionName = "1.0"
+            }
+            compileOptions {
+                sourceCompatibility = JavaVersion.VERSION_17
+                targetCompatibility = JavaVersion.VERSION_17
+            }
+        }
+        dependencies {
+            implementation("androidx.webgpu:webgpu:1.0.0-alpha06")
+            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+            implementation("androidx.appcompat:appcompat:1.6.1")
+        }
+        EOF
+
+        # 5. Move the engine and main files into the freshly generated structure
+        mv app/src/main/java/com/realface/enhancer/WebGpuEnhancer.kt app/src/main/java/com/realface/enhancer/WebGpuEnhancer.kt 2>/dev/null || true
+        mv app/src/main/java/com/realface/enhancer/MainActivity.kt app/src/main/java/com/realface/enhancer/MainActivity.kt 2>/dev/null || true
+
+    - name: Compile App and Generate APK
+      run: gradle assembleDebug --no-daemon
 
     - name: Upload Finished APK File
       uses: actions/upload-artifact@v4
       with:
         name: RealFace-Enhancer-APK
-        path: "**/build/outputs/apk/debug/*.apk"
+        path: app/build/outputs/apk/debug/app-debug.apk
