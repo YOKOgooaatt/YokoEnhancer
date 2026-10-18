@@ -19,14 +19,9 @@ jobs:
         distribution: 'zulu'
         java-version: '17'
 
-    - name: Setup Android Gradle Automation
-      uses: subosito/flutter-action@v2
-      # This step sets up default Android environment commands easily
-      
-    - name: Compile App and Build APK
-      run: |
-        chmod +x gradlew || true
-        gradle assembleDebug --no-daemon
+    - name: Compile App via Global System Engine
+      # We bypass local wrapper scripts and call the global gradle command directly
+      run: gradle assembleDebug --no-daemon
 
     - name: Upload Finished APK File
       uses: actions/upload-artifact@v4
