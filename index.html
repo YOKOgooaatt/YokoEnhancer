@@ -13,12 +13,23 @@
   <link rel="stylesheet" href="style.css">
 
   <style id="clean-star-background">
-    :root { --bg: #020203; }
-    html, body { background-color: #020203 !important; }
-    /* Remove the heavy film-grain overlay while preserving the original ambient glows. */
-    .noise { display: none !important; opacity: 0 !important; background-image: none !important; }
-    /* Keep the existing moving particles, but make them subtle, tiny stars. */
-    #particles { opacity: .24 !important; }
+    :root { --bg: #000000 !important; }
+    html, body { background: #000000 !important; background-image: none !important; }
+    /* Fully disable every grain/noise layer, including pseudo-elements. */
+    .noise, .noise::before, .noise::after,
+    body::before, body::after, html::before, html::after {
+      display: none !important;
+      content: none !important;
+      opacity: 0 !important;
+      background-image: none !important;
+      filter: none !important;
+    }
+    /* Preserve the original ambient glows, but keep the moving stars delicate. */
+    #particles {
+      opacity: .10 !important;
+      pointer-events: none !important;
+    }
+    .ambient { filter: blur(100px); }
     @media (prefers-reduced-motion: reduce) { #particles { display: none !important; } }
   </style>
 </head>
