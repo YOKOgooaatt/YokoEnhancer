@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#07080b">
+  <link rel="icon" type="image/png" href="assets/embedded-01.png">
+  <meta name="description" content="Download YokoEnhancer — a completely free media enhancement app made by Yoko.">
+  <title>YokoEnhancer — Make Every Frame Hit Different</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+
+  <style id="clean-star-background">
+    :root { --bg: #000000 !important; }
+    html, body { background: #000000 !important; background-image: none !important; }
+    /* Fully disable every grain/noise layer, including pseudo-elements. */
+    .noise, .noise::before, .noise::after,
+    body::before, body::after, html::before, html::after {
+      display: none !important;
+      content: none !important;
+      opacity: 0 !important;
+      background-image: none !important;
+      filter: none !important;
+    }
+    /* Preserve the original ambient glows, but keep the moving stars delicate. */
+    #particles {
+      opacity: .10 !important;
+      pointer-events: none !important;
+    }
+    .ambient { filter: blur(100px); }
+    @media (prefers-reduced-motion: reduce) { #particles { display: none !important; } }
+  </style>
+
+  <style id="final-headline-and-cursor-glow">
+    /* Stronger, cleaner hero typography */
+    .hero-copy h1, h1 {
+      font-family: 'Manrope', Inter, system-ui, sans-serif !important;
+      font-weight: 800 !important;
+      letter-spacing: -0.065em !important;
+      line-height: 0.98 !important;
+      text-wrap: balance;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+      color: #f7f7fb;
+      text-shadow: 0 2px 24px rgba(255,255,255,.035);
+    }
+    .hero-copy h1 .gradient-text, h1 .gradient-text {
+      font-weight: 800 !important;
+      filter: drop-shadow(0 0 18px rgba(137, 92, 255, .14));
+    }
+    /* Smooth, premium cursor-following glow; does not add grain or texture */
+    .pointer-glow {
+      position: fixed !important;
+      z-index: 0 !important;
+      width: 560px !important;
+      height: 560px !important;
+      left: 0; top: 0;
+      border-radius: 50% !important;
+      pointer-events: none !important;
+      opacity: 0 !important;
+      background: radial-gradient(circle, rgba(116, 75, 255, .16) 0%, rgba(65, 113, 255, .075) 28%, rgba(0, 0, 0, 0) 68%) !important;
+      filter: blur(12px) !important;
+      transform: translate3d(-50%, -50%, 0);
+      transition: opacity .35s ease !important;
+      mix-blend-mode: screen;
+      will-change: left, top, opacity;
+    }
+    body.cursor-glow-active .pointer-glow { opacity: 1 !important; }
+    @media (hover: none), (prefers-reduced-motion: reduce) {
+      .pointer-glow { display: none !important; }
+    }
+  </style>
+  <script id="final-cursor-glow-script">
+    document.addEventListener('DOMContentLoaded', function () {
+      const glow = document.querySelector('.pointer-glow');
+      if (!glow || !window.matchMedia('(hover: hover)').matches) return;
+      let raf = 0, x = -600, y = -600;
+      window.addEventListener('pointermove', function (e) {
+        x = e.clientX; y = e.clientY;
+        document.body.classList.add('cursor-glow-active');
+        if (!raf) raf = requestAnimationFrame(function () {
+          glow.style.left = x + 'px';
+          glow.style.top = y + 'px';
+          raf = 0;
+        });
+      }, { passive: true });
+      document.addEventListener('pointerleave', function () {
+        document.body.classList.remove('cursor-glow-active');
+      });
+    });
+  </script>
+
+
+<style id="yoko-quality-showcase">
+.compare-showcase{position:relative;isolation:isolate;overflow:hidden;padding:clamp(76px,10vw,142px) 24px clamp(82px,9vw,128px);background:radial-gradient(ellipse at 50% 38%,rgba(105,78,255,.105),transparent 46%),linear-gradient(180deg,#050507 0%,#08080d 48%,#030304 100%);border-top:1px solid rgba(255,255,255,.055);border-bottom:1px solid rgba(255,255,255,.055)}
+.compare-showcase:before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.23;background-image:radial-gradient(circle,rgba(255,255,255,.8) .7px,transparent 1px),radial-gradient(circle,rgba(164,146,255,.7) .7px,transparent 1px);background-size:83px 83px,127px 127px;background-position:10px 18px,44px 61px;mask-image:linear-gradient(180deg,transparent,black 18%,black 82%,transparent)}
+.compare-wrap{position:relative;z-index:1;max-width:1120px;margin:0 auto}
+.compare-kicker{display:flex;align-items:center;justify-content:center;gap:13px;color:#b9b2ff;font-size:10px;font-weight:800;letter-spacing:.22em;text-align:center}
+.compare-kicker-line{width:32px;height:1px;background:linear-gradient(90deg,transparent,#9c8cff)}
+.compare-kicker-line:last-child{transform:rotate(180deg)}
+.compare-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:34px;margin:27px 0 38px}
+.compare-index{font-size:10px;letter-spacing:.18em;font-weight:800;color:#88869a;margin-bottom:15px}
+.compare-title-wrap h2{margin:0;font-size:clamp(36px,5.4vw,68px);line-height:.99;letter-spacing:-.055em;font-weight:850;color:#f8f7ff}
+.compare-title-wrap h2 span{background:linear-gradient(100deg,#b5a9ff 0%,#e2ddff 48%,#9ce9ff 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.compare-heading>p{max-width:310px;margin:0 0 5px;color:#a4a2b2;font-size:14px;line-height:1.8}
+.compare-stage{position:relative;padding:10px;border-radius:24px;background:linear-gradient(135deg,rgba(255,255,255,.12),rgba(255,255,255,.025) 36%,rgba(157,136,255,.13));box-shadow:0 28px 100px rgba(0,0,0,.48),0 0 65px rgba(111,89,255,.09)}
+.compare-frame{position:relative;width:100%;aspect-ratio:2048/1632;overflow:hidden;border-radius:17px;background:#17151a;--compare-position:50%;user-select:none;touch-action:pan-y}
+.compare-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;display:block;pointer-events:none}
+.compare-after{z-index:0}
+.compare-before-layer{position:absolute;z-index:1;inset:0;width:var(--compare-position);overflow:hidden;border-right:0}
+.compare-before{width:calc(100vw - 48px);max-width:1100px;height:100%;object-fit:cover;object-position:left center}
+.compare-frame:has(.compare-before-layer) .compare-before{width:calc(100% * 100 / max(1, var(--compare-position-number, 100)))}
+.compare-frame{--compare-position-number:100}
+.compare-divider{position:absolute;z-index:3;top:0;bottom:0;left:var(--compare-position);width:2px;transform:translateX(-50%);background:rgba(255,255,255,.96);box-shadow:0 0 18px rgba(255,255,255,.4);pointer-events:none}
+.compare-handle{position:absolute;top:50%;left:50%;width:52px;height:52px;display:grid;place-items:center;transform:translate(-50%,-50%);border:1px solid rgba(255,255,255,.8);border-radius:50%;color:#fff;background:rgba(14,13,22,.78);box-shadow:0 4px 28px rgba(0,0,0,.35),0 0 25px rgba(151,130,255,.35);backdrop-filter:blur(14px)}
+.compare-handle svg{width:23px;height:23px}
+.compare-range{position:absolute;z-index:5;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:ew-resize;touch-action:pan-y}
+.compare-badge{position:absolute;z-index:4;top:20px;display:flex;align-items:center;gap:8px;padding:9px 12px;border:1px solid rgba(255,255,255,.2);border-radius:999px;background:rgba(8,8,12,.55);backdrop-filter:blur(12px);font-size:10px;letter-spacing:.15em;font-weight:800;color:white;pointer-events:none}
+.compare-badge-before{left:20px}.compare-badge-after{right:20px}
+.compare-badge-dot{width:6px;height:6px;border-radius:50%;background:#c2b5ff;box-shadow:0 0 10px #b6a5ff}
+.compare-badge-after .compare-badge-dot{background:#9df0dc;box-shadow:0 0 10px #9df0dc}
+.compare-vignette{position:absolute;z-index:2;inset:0;pointer-events:none;box-shadow:inset 0 0 80px rgba(0,0,0,.14)}
+.compare-underbar{display:flex;justify-content:space-between;gap:16px;padding:17px 7px 2px;color:#858294;font-size:9px;font-weight:800;letter-spacing:.16em}
+.compare-underbar span{display:flex;align-items:center;gap:8px}
+.compare-underbar b{font-size:15px;color:#c9c0ff}
+.compare-status-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:#90efc9;box-shadow:0 0 12px #90efc9}
+.compare-bottom{display:grid;grid-template-columns:.85fr 1.5fr .9fr;gap:28px;align-items:center;margin-top:38px;padding:27px 0 0;border-top:1px solid rgba(255,255,255,.09)}
+.compare-resolution{padding-left:3px}.resolution-label{display:block;margin-bottom:11px;color:#88869a;font-size:9px;font-weight:800;letter-spacing:.2em}
+.compare-resolution>div{display:flex;align-items:center;gap:12px}.compare-resolution strong{font-size:34px;letter-spacing:-.06em;color:#f5f3ff}.compare-resolution .resolution-highlight{background:linear-gradient(100deg,#b4a5ff,#9feeff);-webkit-background-clip:text;background-clip:text;color:transparent}.resolution-arrow{color:#77728e;font-size:20px}
+.compare-resolution small{display:block;margin-top:6px;color:#898697;font-size:11px}
+.compare-quote{position:relative;padding-left:24px;border-left:1px solid rgba(166,147,255,.45)}
+.compare-quote-mark{position:absolute;left:0;top:-7px;color:#b5a7ff;font-family:Georgia,serif;font-size:28px}
+.compare-quote p{margin:0 0 10px;color:#e2e0ed;font-size:14px;line-height:1.7}
+.compare-quote-credit{font-size:9px;font-weight:800;letter-spacing:.16em;color:#89869b}
+.compare-stat{display:flex;flex-direction:column;gap:8px;align-items:flex-start;padding-left:10px}
+.stat-spark{color:#b6a5ff;font-size:20px}.compare-stat strong{font-size:10px;letter-spacing:.17em;color:#f1efff}.compare-stat>span:last-child{font-size:11px;color:#888697}
+.compare-footnote{margin-top:24px;color:#6f6d7d;font-size:10px;line-height:1.6;text-align:center}
+@media(max-width:720px){.compare-showcase{padding-left:16px;padding-right:16px}.compare-heading{display:block;margin-bottom:26px}.compare-heading>p{margin-top:17px;max-width:470px}.compare-stage{padding:5px;border-radius:17px}.compare-frame{border-radius:13px}.compare-badge{top:12px;padding:7px 9px;font-size:8px}.compare-badge-before{left:12px}.compare-badge-after{right:12px}.compare-handle{width:43px;height:43px}.compare-underbar{font-size:8px;letter-spacing:.1em}.compare-bottom{grid-template-columns:1fr 1.3fr;gap:22px}.compare-stat{grid-column:1/-1;padding:17px 0 0;border-top:1px solid rgba(255,255,255,.08)}}
+@media(prefers-reduced-motion:reduce){.compare-showcase *{scroll-behavior:auto!important}}
+</style>
+
+
+<style id="yoko-comparison-selector-fixes">
+.compare-sample-switch{display:flex;align-items:center;justify-content:center;gap:9px;margin:-12px 0 25px}
+.compare-sample-option{display:inline-flex;align-items:center;gap:9px;padding:9px 13px;border:1px solid rgba(255,255,255,.09);border-radius:999px;background:rgba(255,255,255,.025);color:#9693a5;font:inherit;font-size:11px;letter-spacing:.025em;cursor:pointer;transition:background .22s,border-color .22s,color .22s,box-shadow .22s}
+.compare-sample-option:hover{color:#f7f5ff;border-color:rgba(180,163,255,.38)}
+.compare-sample-option.is-active{color:#f6f3ff;border-color:rgba(173,153,255,.5);background:linear-gradient(120deg,rgba(139,112,255,.2),rgba(105,206,255,.08));box-shadow:inset 0 0 0 1px rgba(175,158,255,.04),0 0 22px rgba(124,99,255,.08)}
+.sample-number{font-size:9px;font-weight:800;letter-spacing:.08em;color:#b6a8ff}
+.sample-switch-divider{width:1px;height:17px;background:rgba(255,255,255,.12)}
+.compare-frame{height:auto;min-height:0;aspect-ratio:2048/1632;background:#101014}
+.compare-photo{object-fit:contain!important;object-position:center!important;background:#101014}
+.compare-before-layer{height:100%;}
+.compare-before{height:100%;max-width:none;object-fit:contain!important;object-position:center!important}
+@media(max-width:520px){.compare-sample-switch{margin:-3px 0 20px}.compare-sample-option{padding:8px 11px;font-size:10px}.compare-heading{gap:0}}
+</style>
+
+</head>
+<body>
+  <div class="noise" aria-hidden="true"></div>
+  <canvas id="particles" aria-hidden="true"></canvas>
+  <div class="ambient ambient-a" aria-hidden="true"></div>
+  <div class="ambient ambient-b" aria-hidden="true"></div>
+  <div class="pointer-glow" aria-hidden="true"></div>
+
+  <header class="nav wrap">
+    <a class="brand" href="#top" aria-label="YokoEnhancer home">
+      <span class="brand-mark"><img src="assets/embedded-01.png" alt="YokoEnhancer logo" style="display:block;width:100%;height:100%;object-fit:contain;border-radius:inherit"></span>
+      <span>YOKO<span class="brand-light">ENHANCER</span></span>
+    </a>
+    <nav class="nav-links" aria-label="Main navigation">
+      <a href="#features">Features</a>
+      <a href="#requirements">System requirements</a>
+      <a href="#download" class="nav-cta">Get the app <span>↗</span></a>
+    </nav>
+    <button class="menu-toggle" aria-label="Toggle menu" aria-expanded="false"><span></span><span></span></button>
+  </header>
+
+  <main id="top">
+    <section class="hero wrap">
+      <div class="hero-copy reveal">
+        <div class="eyebrow"><span class="live-dot"></span> CREATIVE TOOLKIT <span class="eyebrow-divider"></span> WINDOWS</div>
+        <h1>Make Every<br>Frame <span class="gradient-text">Hit Different.</span></h1>
+        <p class="hero-sub">Meet <strong>YokoEnhancer</strong> — a creator-focused enhancement tool built to help your images and videos look sharper, richer, and ready to stand out.</p>
+        <div class="hero-actions">
+          <a class="button button-primary magnetic" href="#download"><span class="button-icon">↓</span> Download YokoEnhancer <span class="button-arrow">↗</span></a>
+          <a class="button button-ghost" href="#features">Explore features <span>↓</span></a>
+        </div>
+        <div class="hero-proof">
+          <div class="proof-icon">✳</div>
+          <div><strong>100% free. No paywall.</strong><span>Made for creators, not subscriptions.</span></div>
+        </div>
+      </div>
+
+      <div class="hero-visual reveal" aria-label="Abstract YokoEnhancer product artwork">
+        <div class="visual-orbit orbit-one"></div>
+        <div class="visual-orbit orbit-two"></div>
+        <div class="visual-glass">
+          <div class="glass-top"><span class="window-dots"><i></i><i></i><i></i></span><span class="glass-label">YOKO / IMAGE ENGINE</span><span class="status-pill"><i></i> READY</span></div>
+          <div class="preview-art">
+            <div class="art-grid"></div>
+            <div class="art-sun"></div>
+            <div class="art-mountain mountain-back"></div>
+            <div class="art-mountain mountain-front"></div>
+            <div class="art-scan"></div>
+            <div class="preview-tag">DETAIL / 01</div>
+            <div class="preview-label">CLARITY<br><span>IN EVERY PIXEL</span></div>
+          </div>
+          <div class="glass-bottom">
+            <div class="meter-label"><span>IMAGE QUALITY</span><strong>ENHANCED</strong></div>
+            <div class="meter"><span></span></div>
+            <div class="glass-metrics"><span><b>01</b> COLOR</span><span><b>02</b> DETAIL</span><span><b>03</b> FINISH</span></div>
+          </div>
+        </div>
+        <div class="float-chip chip-top"><span class="chip-spark">✦</span><div><strong>Detail, refined</strong><small>Creator workflow</small></div></div>
+        <div class="float-chip chip-bottom"><span class="chip-pulse"></span><div><strong>FREE FOREVER</strong><small>No subscription required</small></div></div>
+        <div class="visual-caption">BUILT FOR YOUR NEXT MASTERPIECE <span>— 001</span></div>
+      </div>
+      <div class="hero-scroll"><span class="scroll-line"></span> SCROLL TO DISCOVER</div>
+    </section>
+
+
+    <section class="compare-showcase" id="quality-demo">
+      <div class="compare-wrap">
+        <div class="compare-kicker"><span class="compare-kicker-line"></span> SEE THE DIFFERENCE <span class="compare-kicker-line"></span></div>
+        <div class="compare-heading">
+          <div class="compare-title-wrap">
+            <div class="compare-index">02 / THE DIFFERENCE</div>
+            <h2>144p <span>To 4K.</span></h2>
+          </div>
+          <p>Two transformations. One simple drag. Choose a sample, then slide across the frame to compare the original with the enhanced version.</p>
+        </div>
+        <div class="compare-sample-switch" role="group" aria-label="Choose comparison example">
+          <button type="button" class="compare-sample-option is-active" data-sample="cats" aria-pressed="true"><span class="sample-number">01</span> Soft focus</button>
+          <span class="sample-switch-divider" aria-hidden="true"></span>
+          <button type="button" class="compare-sample-option" data-sample="patrick" aria-pressed="false"><span class="sample-number">02</span> Portrait</button>
+        </div>
+        <div class="compare-stage">
+          <div class="compare-frame" id="compareFrame" style="--compare-position: 50%; aspect-ratio:2048/1632;">
+            <img class="compare-photo compare-after" id="compareAfterImage" src="assets/embedded-02.png" alt="Enhanced cat photo with detailed fur and glasses" draggable="false">
+            <div class="compare-before-layer" id="compareBeforeLayer">
+              <img class="compare-photo compare-before" id="compareBeforeImage" src="assets/embedded-03.png" alt="Original low-resolution cat photo before enhancement" draggable="false">
+            </div>
+            <div class="compare-vignette"></div>
+            <div class="compare-badge compare-badge-before"><span class="compare-badge-dot"></span> BEFORE</div>
+            <div class="compare-badge compare-badge-after"><span class="compare-badge-dot"></span> AFTER</div>
+            <div class="compare-divider" aria-hidden="true"><span class="compare-handle"><svg viewBox="0 0 24 24" fill="none"><path d="M8 5 3 12l5 7M16 5l5 7-5 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+            <input class="compare-range" id="compareRange" type="range" min="0" max="100" value="50" aria-label="Drag to compare before and after images">
+          </div>
+          <div class="compare-underbar"><span><i class="compare-status-dot"></i> <span id="compareSampleCaption">SAMPLE 01 · SOFT FOCUS</span></span><span>DRAG TO REVEAL <b>↔</b></span></div>
+        </div>
+        <div class="compare-bottom">
+          <div class="compare-resolution"><span class="resolution-label">THE TRANSFORMATION</span><div><strong id="compareSourceResolution">144p</strong><span class="resolution-arrow">⟶</span><strong class="resolution-highlight">4K</strong></div><small>Upscale. Refine. Reveal more.</small></div>
+          <div class="compare-quote"><span class="compare-quote-mark">“</span><p>Look beyond the blur. Bring textures, edges, and the little details back into focus.</p><span class="compare-quote-credit">THE YOKOENHANCER APPROACH</span></div>
+          <div class="compare-stat"><span class="stat-spark">✳</span><strong>LOOK CLOSER.</strong><span id="compareDetailCaption">Fur · whiskers · tiny details</span></div>
+        </div>
+        <div class="compare-footnote">Visual examples are illustrative. Upscaling can improve presentation, but cannot guarantee recovery of details absent from the original.</div>
+      </div>
+    </section>
+
+    <section class="ticker" aria-label="Product values"><div class="ticker-track">
+      <span>DETAIL FIRST</span><i>✳</i><span>CREATOR POWER</span><i>✳</i><span>NO SUBSCRIPTION</span><i>✳</i><span>MADE BY YOKO</span><i>✳</i><span>DETAIL FIRST</span><i>✳</i><span>CREATOR POWER</span><i>✳</i><span>NO SUBSCRIPTION</span><i>✳</i><span>MADE BY YOKO</span><i>✳</i>
+    </div></section>
+
+    <section class="section wrap" id="features">
+      <div class="section-heading reveal">
+        <div><div class="eyebrow"><span class="section-index">01</span> THE TOOLKIT</div><h2>Less hassle.<br><span class="muted-heading">More impact.</span></h2></div>
+        <p>A focused toolkit for the finishing touches that make your content feel intentional. Your exact results depend on the source media and your PC.</p>
+      </div>
+      <div class="feature-grid">
+        <article class="feature-card feature-large reveal">
+          <div class="card-glow"></div><div class="feature-icon icon-spectrum"><span>◒</span></div>
+          <div class="feature-number">01 / IMAGE</div><h3>Color with intention.</h3><p>Give your visuals a cleaner finish with brightness, color, and contrast-style adjustments.</p>
+          <div class="mini-spectrum"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+        </article>
+        <article class="feature-card reveal">
+          <div class="card-glow"></div><div class="feature-icon">⌁</div><div class="feature-number">02 / DETAIL</div><h3>Sharper finish.</h3><p>Bring edges and fine details forward with sharpening tools.</p>
+          <div class="detail-lines"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+        </article>
+        <article class="feature-card reveal">
+          <div class="card-glow"></div><div class="feature-icon">▧</div><div class="feature-number">03 / WORKFLOW</div><h3>Made for creators.</h3><p>A desktop-first tool for people who want more control over their media workflow.</p>
+          <div class="workflow-visual"><span>INPUT</span><b>→</b><span>ENHANCE</span><b>→</b><span>EXPORT</span></div>
+        </article>
+        <article class="feature-card feature-large feature-free reveal">
+          <div class="card-glow"></div><div class="feature-icon">✳</div><div class="feature-number">04 / ALWAYS</div><h3>Free means free.</h3><p>No paid tiers or subscription upsells. YokoEnhancer is presented here as completely free to use.</p>
+          <div class="free-stamp">100%<small>FREE TO USE</small></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="performance-section" id="requirements">
+      <div class="performance-glow"></div>
+      <div class="performance wrap reveal">
+        <div class="performance-left">
+          <div class="eyebrow"><span class="section-index">02</span> BEFORE YOU INSTALL</div>
+          <h2>Big media needs<br><span class="gradient-text">real horsepower.</span></h2>
+          <p>YokoEnhancer can process demanding images and videos. For fast, efficient results, use a PC with good specifications — especially when working with large files, high resolutions, or AI-powered operations.</p>
+        </div>
+        <div class="spec-panel">
+          <div class="spec-panel-top"><span>PERFORMANCE NOTE</span><span class="warning-mark">!</span></div>
+          <div class="spec-row"><span class="spec-symbol">▣</span><div><strong>Capable processor</strong><small>A modern multi-core CPU helps keep processing responsive.</small></div></div>
+          <div class="spec-row"><span class="spec-symbol">▤</span><div><strong>Plenty of RAM</strong><small>More memory helps with large images, long videos, and multitasking.</small></div></div>
+          <div class="spec-row"><span class="spec-symbol">◈</span><div><strong>Dedicated GPU recommended</strong><small>A capable graphics card can significantly help compatible AI workloads.</small></div></div>
+          <div class="spec-note">Older or lower-spec PCs may run slowly, take much longer, or struggle with larger files. Exact requirements depend on the models and settings used.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="download-section wrap" id="download">
+      <div class="download-card reveal">
+        <div class="download-card-orb"></div><div class="download-card-grid"></div>
+        <div class="download-content">
+          <div class="eyebrow"><span class="live-dot"></span> YOUR NEXT CREATIVE TOOL</div>
+          <h2>Ready when<br><span class="gradient-text">you are.</span></h2>
+          <p>Get YokoEnhancer for Windows and start building your own look. The installer is hosted on Google Drive.</p>
+          <div class="download-actions">
+            <a class="button button-primary button-big magnetic" href="https://drive.google.com/uc?export=download&amp;id=1OdZuF41umx-WjbE8eewWf1FYd94EBp63"><span class="button-icon">↓</span> Download installer <span class="button-arrow">↗</span></a>
+            <a class="drive-link" href="https://drive.google.com/file/d/1OdZuF41umx-WjbE8eewWf1FYd94EBp63/view?usp=drive_link" target="_blank" rel="noopener noreferrer">Having trouble? Open file in Google Drive ↗</a>
+          </div>
+          <div class="download-meta"><span><i class="meta-dot"></i> WINDOWS DESKTOP</span><span>INSTALLER SIZE: 1 GB+</span><span>HOSTED ON GOOGLE DRIVE</span></div>
+        </div>
+        <div class="download-visual" aria-hidden="true">
+          <div class="download-ring ring-a"></div><div class="download-ring ring-b"></div>
+          <div class="download-core"><div class="core-mark"><img src="assets/embedded-01.png" alt="YokoEnhancer logo" style="display:block;width:100%;height:100%;object-fit:contain;border-radius:inherit"></div><span>YOKO<br>ENHANCER</span></div>
+          <div class="download-orbit-label label-a">CREATIVE CONTROL</div><div class="download-orbit-label label-b">100% FREE</div>
+        </div>
+      </div>
+      <div class="install-tip reveal"><span class="tip-icon">↗</span><p><strong>Quick install tip</strong><br>Because the installer is over 1 GB, use a stable connection and make sure you have enough free disk space before downloading. If Google Drive displays a confirmation screen, follow its download prompt.</p></div>
+    </section>
+
+    <section class="manifesto wrap reveal">
+      <span class="manifesto-mark">“</span>
+      <p>Good tools should help you create —<br><span>not make you pay just to begin.</span></p>
+      <div class="manifesto-byline"><span></span> THE YOKO MINDSET</div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-top wrap">
+      <a class="brand" href="#top"><span class="brand-mark"><img src="assets/embedded-01.png" alt="YokoEnhancer logo" style="display:block;width:100%;height:100%;object-fit:contain;border-radius:inherit"></span><span>YOKO<span class="brand-light">ENHANCER</span></span></a>
+      <div class="footer-free"><span class="free-check">✓</span> COMPLETELY FREE TO USE</div>
+      <a href="#top" class="back-top">BACK TO TOP ↑</a>
+    </div>
+    <div class="footer-bottom wrap"><span>MADE BY <strong>YOKO</strong></span><span>BUILT FOR CREATORS. FREE FOR EVERYONE.</span><span>© <span id="year"></span> YOKO</span></div>
+  </footer>
+  <script src="script.js"></script>
+
+<script id="yoko-quality-showcase-script">
+(()=>{
+ const frame=document.getElementById('compareFrame'),range=document.getElementById('compareRange');
+ const before=document.getElementById('compareBeforeImage'),after=document.getElementById('compareAfterImage'),layer=document.getElementById('compareBeforeLayer');
+ if(!frame||!range||!before||!after||!layer)return;
+ const samples={
+  cats:{before:"assets/embedded-03.png",after:"assets/embedded-02.png",ratio:'2048 / 1632',source:'720p',caption:'SAMPLE 01 · SOFT FOCUS',detail:'Fur · whiskers · tiny details',beforeAlt:'Original cat photo before enhancement',afterAlt:'Enhanced cat photo with detailed fur and glasses'},
+  patrick:{before:"assets/embedded-04.png",after:"assets/embedded-05.png",ratio:'1804 / 2047',source:'144p',caption:'SAMPLE 02 · PORTRAIT',detail:'Hair · facial texture · fine edges',beforeAlt:'Original tiny 144p portrait before enhancement',afterAlt:'Enhanced portrait with more visible texture'}
+ };
+ const fit=()=>{before.style.width=frame.clientWidth+'px';before.style.maxWidth='none';before.style.height=frame.clientHeight+'px';};
+ const update=()=>{frame.style.setProperty('--compare-position',range.value+'%');layer.style.width=range.value+'%';fit();};
+ const select=(name)=>{const item=samples[name];if(!item)return;before.src=item.before;after.src=item.after;before.alt=item.beforeAlt;after.alt=item.afterAlt;frame.style.aspectRatio=item.ratio;document.getElementById('compareSampleCaption').textContent=item.caption;document.getElementById('compareDetailCaption').textContent=item.detail;document.getElementById('compareSourceResolution').textContent=item.source;document.querySelectorAll('.compare-sample-option').forEach(btn=>{const active=btn.dataset.sample===name;btn.classList.toggle('is-active',active);btn.setAttribute('aria-pressed',String(active));});range.value=50;update();};
+ range.addEventListener('input',update);window.addEventListener('resize',fit);
+ document.querySelectorAll('.compare-sample-option').forEach(btn=>btn.addEventListener('click',()=>select(btn.dataset.sample)));
+ before.addEventListener('load',fit);after.addEventListener('load',fit);select('cats');
+})();
+</script>
+
+</body>
+</html>
